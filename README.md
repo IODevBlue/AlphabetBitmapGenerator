@@ -12,9 +12,9 @@ Uses
 You can use Alphabet Bitmap Generator when you need single alphabet circular bitmap images for applications that display contacts.
 
 <p align="center"><img src="/art/square1.png" alt="Rectangular Bitmap"></p>
-<p align="center"><img src="/art/circle(1).png" alt="Circular Bitmap 1"></p>
-<p align="center"><img src="/art/circle(2).png" alt="Circular Bitmap 2"></p>
-<p align="center"><img src="/art/circle(3).png" alt="Circular Bitmap 3"></p>
+<p align="center"><img src="/art/circle (1).png" alt="Circular Bitmap 1"></p>
+<p align="center"><img src="/art/circle (2).png" alt="Circular Bitmap 2"></p>
+<p align="center"><img src="/art/circle (3).png" alt="Circular Bitmap 3"></p>
 
 Usage
 -----
