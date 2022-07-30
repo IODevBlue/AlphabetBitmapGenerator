@@ -9,12 +9,13 @@ This library uses [DesignColors](https://github.com/IODevBlue/DesignColors) to p
 
 Uses
 ----
-You can use Alphabet Bitmap Generator when you need single alphabet circular bitmap images for applications that display contacts.
+- You can use Alphabet Bitmap Generator when you need single alphabet circular bitmap images for applications that display contacts.
+- It can also be used in custom Material Chip implementations.
 
 <p align="center"><img src="/art/square1.png" alt="Rectangular Bitmap"></p>
+<p align="center"><img src="/art/circle (3).png" alt="Circular Bitmap 3"></p>
 <p align="center"><img src="/art/circle (1).png" alt="Circular Bitmap 1"></p>
 <p align="center"><img src="/art/circle (2).png" alt="Circular Bitmap 2"></p>
-<p align="center"><img src="/art/circle (3).png" alt="Circular Bitmap 3"></p>
 
 Usage
 -----
@@ -35,7 +36,7 @@ alphabetBitmapGenerator.apply {
 - The Dimension should be the same as that of the ImageView for conformity. It is best to set the ImageView's height and width to wrap_content.
 
 Generate a rectangular bitmap by passing in a name string:
-- The name must be a valid string for an alphabet bitmap to be generated. The default image would be used if the name parameter is an invalid string.
+- The first character of the provided name string must be a valid alphabet character for a bitmap to be generated. The default image would be used if the first character is not a valid alphabet character. (See sample images and project for details).
 - The second parameter takes in an optional background color integer. If null is passed, a random Material Blue is chosen from the [DesignColors](https://github.com/IODevBlue/DesignColors) library.
 ```KOTLIN
 val bitmap = alphabetBitmapGenerator.generateAlphabetBitmap(name, null)
@@ -66,8 +67,8 @@ Configurations:
 |:---|:---:|:---:|
 |`setDimension(dimension: Int)` |Unit |Sets an equal dimension for the generated Alphabet Image. |
 |`setSpecificDimension(width: Int, height: Int)` |Unit |Sets a specific dimension for the generated Alphabet Image. |
-|`generateAlphabetBitmap(displayName: String, @ColorInt backgroundColor: Int?)` |A bitmap containing either an alphabet or the default bitmap. |
-|`generateCircularAlphabetBitmap(displayName: String, radius: Float, @ColorInt backgroundColor: Int?)`|A circular bitmap containing either an alphabet or the default bitmap. |
+|`generateAlphabetBitmap(displayName: String, @ColorInt backgroundColor: Int?)` |A bitmap containing either an alphabet or the default bitmap. |Generates a rectangular alphabet bitmap using the first character from the displayName String parameter. |
+|`generateCircularAlphabetBitmap(displayName: String, radius: Float, @ColorInt backgroundColor: Int?)`|A circular bitmap containing either an alphabet or the default bitmap. |Generates a circular alphabet bitmap using the first character from the displayName String parameter. |
 
 Changelog
 ---------
