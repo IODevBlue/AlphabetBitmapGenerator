@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    >
+
+    <ImageView
+        android:id="@+id/contact_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:src="@android:drawable/ic_delete" />
+
+    <TextView
+        android:id="@+id/contact_name_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/contact_imageview"
+        android:fontFamily="@font/gotham_medium"
+        android:text="Praise"
+        android:textColor="@color/black"
+        android:layout_alignBottom="@id/contact_imageview"
+        android:textSize="20sp" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/contact_name_textview"
+        android:layout_marginTop="5dp"
+        app:dividerColor="@color/main_blue"
+        app:dividerInsetStart="20dp" />
+
+</RelativeLayout>
