@@ -53,6 +53,43 @@ Set the bitmap as the ImageView's bitmap:
 imageView.setImageBitmap(bitmap)
 ```
 
+Java Interoperability
+---------------------
+This library works perfectly with Java projects.
+
+Initialize an Alphabet Image Generator instance using a Context:
+```JAVA
+AlphabetBitmapGenerator alphabetBitmapGenerator = new AlphabetBitmapGenerator(context);
+```
+
+Apply your configurations to the Alphabet Image Generator Instance:
+```JAVA
+alphabetBitmapGenerator.setDimension(100);
+alphabetBitmapGenerator.setAlphabetTextColor(Color.WHITE);
+```
+**NOTE:**
+- Apply the configurations before generating a bitmap.
+- The Dimension should be the same as that of the ImageView for conformity. It is best to set the ImageView's height and width to wrap_content.
+
+Generate a rectangular bitmap by passing in a name string:
+- The first character of the provided name string must be a valid alphabet character for a bitmap to be generated. The default image would be used if the first character is not a valid alphabet character. (See sample images and project for details).
+- The second parameter takes in an optional background color integer. If null is passed, a random Material Blue is chosen from the [DesignColors](https://github.com/IODevBlue/DesignColors) library.
+```JAVA
+Bitmap bitmap = alphabetBitmapGenerator.generateAlphabetBitmap(name, null);
+```
+
+Or generate a circular bitmap also passing in a name string:
+- This method takes in an optional float radius parameter. If 0F is passed, the radius would be calculated using the width or height parameter set by either setDimension(), setSpecificDimension() or the default width and height.
+```JAVA
+Bitmap bitmap = alphabetBitmapGenerator.generateCircularAlphabetBitmap(name, 0F, null);
+```
+
+Set the bitmap as the ImageView's bitmap:
+```KOTLIN
+imageView.setImageBitmap(bitmap)
+```
+
+
 See sample project for more details.
 
 Configurations:
