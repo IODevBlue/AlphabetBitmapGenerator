@@ -85,10 +85,9 @@ Bitmap bitmap = alphabetBitmapGenerator.generateCircularAlphabetBitmap(name, 0F,
 ```
 
 Set the bitmap as the ImageView's bitmap:
-```KOTLIN
-imageView.setImageBitmap(bitmap)
+```JAVA
+imageView.setImageBitmap(bitmap);
 ```
-
 
 See sample project for more details.
 
