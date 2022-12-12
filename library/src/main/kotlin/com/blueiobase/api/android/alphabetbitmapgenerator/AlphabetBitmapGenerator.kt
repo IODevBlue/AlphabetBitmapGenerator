@@ -184,6 +184,7 @@ open class AlphabetBitmapGenerator (context: Context) {
      * @param displayName The name [String] whose first character would be used in generating an Alphabet Image.
      * @param backgroundColor The background color to be applied to the [Bitmap]. A random [Material][DesignColors.MaterialDesign] Blue color is chosen if none is specified.
      * @return A [Bitmap] containing either an Alphabet or the [Default Bitmap][mDefaultBitmap].
+     * If the [displayName] parameter is empty, a null [Bitmap] is returned.
      * @see generateCircularAlphabetBitmap
      */
     fun generateAlphabetBitmap(displayName: String, @ColorInt backgroundColor: Int? = null): Bitmap? {
@@ -214,6 +215,7 @@ open class AlphabetBitmapGenerator (context: Context) {
      * @param radius The radius of the circle which would contain the Alphabet.
      * @param backgroundColor The background color to be applied to the [Bitmap]. A random [Material][DesignColors.MaterialDesign] Blue color is chosen if none is specified.
      * @return A circular [Bitmap] containing either an Alphabet or the [Default Bitmap][mDefaultBitmap].
+     * If the [displayName] parameter is empty, a null [Bitmap] is returned.
      * @see generateAlphabetBitmap
      */
     fun generateCircularAlphabetBitmap(displayName: String, radius: Float = 0F, @ColorInt backgroundColor: Int? = null): Bitmap? {
