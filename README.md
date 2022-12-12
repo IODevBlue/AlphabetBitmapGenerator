@@ -1,7 +1,7 @@
 Alphabet Bitmap Generator
 =========================
 
-Alphabet Bitmap Generator is a simple library that generates a rectangular or circular bitmap image containing the first alphabet from a provided String name.
+Alphabet Bitmap Generator is a simple library that generates a rectangular or circular bitmap image containing the first alphabet from a provided String parameter.
 
 Dependencies
 ------------
@@ -35,15 +35,18 @@ alphabetBitmapGenerator.apply {
 - Apply the configurations before generating a bitmap.
 - The Dimension should be the same as that of the ImageView for conformity. It is best to set the ImageView's height and width to wrap_content.
 
-Generate a rectangular bitmap by passing in a name string:
-- The first character of the provided name string must be a valid alphabet character for a bitmap to be generated. The default image would be used if the first character is not a valid alphabet character. (See sample images and project for details).
-- The second parameter takes in an optional background color integer. If null is passed, a random Material Blue is chosen from the [DesignColors](https://github.com/IODevBlue/DesignColors) library.
+Generate a rectangular bitmap by passing in a string parameter:
+- The first character of the provided string must be a valid alphabet character for a bitmap to be generated. The default image would be used if the first character is not a valid alphabet character. (See sample images and project for details).
+```KOTLIN
+val bitmap = alphabetBitmapGenerator.generateAlphabetBitmap(name)
+```
+- The second parameter of the `generateAlphabetBitmap()` takes in an optional background color integer. If `null` or no value is passed, a random Material Blue is chosen from the [DesignColors](https://github.com/IODevBlue/DesignColors) library.
 ```KOTLIN
 val bitmap = alphabetBitmapGenerator.generateAlphabetBitmap(name, null)
 ```
 
-Or generate a circular bitmap also passing in a name string:
-- This method takes in an optional float radius parameter. If 0F is passed, the radius would be calculated using the width or height parameter set by either setDimension(), setSpecificDimension() or the default width and height.
+Or generate a circular bitmap also passing in a string:
+- This method takes in an optional float radius parameter. If 0F is passed or no value is set, the radius would be calculated using the width or height parameter set by either `setDimension()`, `setSpecificDimension()` or the default width and height.
 ```KOTLIN
 val bitmap = alphabetBitmapGenerator.generateCircularAlphabetBitmap(name, 0F, null)
 ```
@@ -71,15 +74,18 @@ alphabetBitmapGenerator.setAlphabetTextColor(Color.WHITE);
 - Apply the configurations before generating a bitmap.
 - The Dimension should be the same as that of the ImageView for conformity. It is best to set the ImageView's height and width to wrap_content.
 
-Generate a rectangular bitmap by passing in a name string:
-- The first character of the provided name string must be a valid alphabet character for a bitmap to be generated. The default image would be used if the first character is not a valid alphabet character. (See sample images and project for details).
-- The second parameter takes in an optional background color integer. If null is passed, a random Material Blue is chosen from the [DesignColors](https://github.com/IODevBlue/DesignColors) library.
+Generate a rectangular bitmap by passing in a string parameter:
+- The first character of the provided string must be a valid alphabet character for a bitmap to be generated. The default image would be used if the first character is not a valid alphabet character. (See sample images and project for details).
+```JAVA
+Bitmap bitmap = alphabetBitmapGenerator.generateAlphabetBitmap(name);
+```
+- The second parameter of the `generateAlphabetBitmap()` takes in an optional background color integer. If `null` or no value is passed, a random Material Blue is chosen from the [DesignColors](https://github.com/IODevBlue/DesignColors) library.
 ```JAVA
 Bitmap bitmap = alphabetBitmapGenerator.generateAlphabetBitmap(name, null);
 ```
 
-Or generate a circular bitmap also passing in a name string:
-- This method takes in an optional float radius parameter. If 0F is passed, the radius would be calculated using the width or height parameter set by either setDimension(), setSpecificDimension() or the default width and height.
+Or generate a circular bitmap also passing in a string:
+- This method takes in an optional float radius parameter. If 0F is passed or no value is set, the radius would be calculated using the width or height parameter set by either `setDimension()`, `setSpecificDimension()` or the default width and height.
 ```JAVA
 Bitmap bitmap = alphabetBitmapGenerator.generateCircularAlphabetBitmap(name, 0F, null);
 ```
@@ -110,3 +116,24 @@ Changelog
 ---------
 * **1.0.0**
     * Initial release
+
+* **1.1.0**
+    * Default parameters for `generateCircularAlphabetBitmap()` and `generateAlphabetBitmap()`
+
+License
+=======
+```
+    Copyright 2022 IO DevBlue
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+```
