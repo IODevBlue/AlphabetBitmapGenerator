@@ -9,8 +9,11 @@ import android.text.TextPaint
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toDrawable
 import com.blueiobase.api.android.R
+import com.blueiobase.api.android.alphabetbitmapgenerator.internal.BorderShape
 import com.blueiobase.api.android.designcolors.DesignColors
+import kotlin.math.ceil
 
 /**
  * This class generates a circular [Bitmap] containing a single Alphabet from the first [Char] of a given [String].
@@ -20,7 +23,7 @@ import com.blueiobase.api.android.designcolors.DesignColors
  * @see [DesignColors]
  * @since 1.0.0
  */
-open class AlphabetBitmapGenerator (context: Context) {
+open class AlphabetBitmapGenerator (private val context: Context) {
 
    companion object {
 
@@ -191,14 +194,17 @@ open class AlphabetBitmapGenerator (context: Context) {
      * Generates a rectangular Alphabet Image [Bitmap] using the first character from the [displayName] parameter.
      * @param displayName The name [String] whose first character would be used in generating an Alphabet Image.
      * @param backgroundColor The background color to be applied to the [Bitmap]. A random [Material][DesignColors.MaterialDesign] Blue color is chosen if none is specified.
+     * @param borderConfig The configurations for a border.
      * @return A [Bitmap] containing either an Alphabet or the [Default Bitmap][mDefaultBitmap].
      * If the [displayName] parameter is empty, a null [Bitmap] is returned.
      * @see generateCircularAlphabetBitmap
      */
-    fun generateAlphabetBitmap(displayName: String, @ColorInt backgroundColor: Int? = null): Bitmap? {
+    fun generateAlphabetBitmap(displayName: String, @ColorInt backgroundColor: Int? = null,
+                               borderConfig: BorderConfig? = null): Bitmap? {
 
         if (displayName.isEmpty()) return null
         val alphabetBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
+        val asDrawable = alphabetBitmap.toDrawable(context.resources)
         val firstChar = displayName[0]
         val canvas = Canvas(alphabetBitmap)
         canvas.apply {
@@ -209,6 +215,7 @@ open class AlphabetBitmapGenerator (context: Context) {
                 drawText(mFirstCharacter, 0, 1, (mWidth / 2).toFloat(), (mHeight/2)+ (mBounds.bottom - mBounds.top)/2.toFloat(), mPaint)
             } else {
                 drawBitmap(mDefaultBitmap, dpToPx(0).toFloat(), dpToPx(0).toFloat(), null)
+//                drawBitmap(mDefaultBitmap, (mWidth / 2).toFloat(), (mHeight / 2).toFloat(), null)
             }
             return alphabetBitmap
         }
@@ -222,11 +229,14 @@ open class AlphabetBitmapGenerator (context: Context) {
      * @param displayName The name [String] whose first character would be used in generating an Alphabet Image.
      * @param radius The radius of the circle which would contain the Alphabet.
      * @param backgroundColor The background color to be applied to the [Bitmap]. A random [Material][DesignColors.MaterialDesign] Blue color is chosen if none is specified.
+     * @param borderConfig The configurations for a border.
      * @return A circular [Bitmap] containing either an Alphabet or the [Default Bitmap][mDefaultBitmap].
      * If the [displayName] parameter is empty, a null [Bitmap] is returned.
      * @see generateAlphabetBitmap
      */
-    fun generateCircularAlphabetBitmap(displayName: String, radius: Float = 0F, @ColorInt backgroundColor: Int? = null): Bitmap? {
+    fun generateCircularAlphabetBitmap(displayName: String, radius: Float = 0F,
+                                       @ColorInt backgroundColor: Int? = null,
+                                       borderConfig: BorderConfig? = null): Bitmap? {
 
         if (displayName.isEmpty()) return null
         val alphabetBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
@@ -234,6 +244,14 @@ open class AlphabetBitmapGenerator (context: Context) {
         val canvas = Canvas(alphabetBitmap)
         canvas.apply {
             drawColor(backgroundColor?:DesignColors.MaterialDesign.randomBlueColor())
+//            borderConfig?.let {
+//                if (it.borderThickness > 0)
+//                    drawBorder(alphabetBitmap.toDrawable(context.resources), canvas,
+//                        BorderConfig().also {
+//                            it.borderColor = DesignColors.MaterialDesign.randomBrownColor()
+//                            it.borderThickness = 5F
+//                        }, BorderShape.CIRCLE)
+//            }
             return if (verifyIfAlphabetOrDigit(firstChar)) {
                 mFirstCharacter[0] = firstChar.uppercaseChar()
                 mPaint.getTextBounds(mFirstCharacter, 0, 1, mBounds)
@@ -241,24 +259,15 @@ open class AlphabetBitmapGenerator (context: Context) {
                 generateCircularBitmap(alphabetBitmap, radius)
             } else {
                 drawBitmap(mDefaultBitmap, dpToPx(0).toFloat(), dpToPx(0).toFloat(), null)
+//                drawBitmap(mDefaultBitmap, 50F, 50F, null)
                 generateCircularBitmap(mDefaultBitmap, radius)
             }
         }
     }
 
-    /**
-     * Internal method which reshapes the [bitmap] parameter into a circular shape.
-     * @param bitmap The [Bitmap] to be given a circular shape.
-     * @param radius The radius of the circle which would contain the Alphabet.
-     * @return A circular [Bitmap].
-     */
-    private fun generateCircularBitmap(bitmap: Bitmap, radius: Float): Bitmap {
-        val output: Bitmap = if (bitmap.width > bitmap.height) {
-            Bitmap.createBitmap(bitmap.height, bitmap.height, Bitmap.Config.ARGB_8888)
-        } else {
-            Bitmap.createBitmap(bitmap.width, bitmap.width, Bitmap.Config.ARGB_8888)
-        }
-
+    private fun drawBorder(bitmap: Bitmap, canvas: Canvas, borderConfig: BorderConfig, shape: BorderShape, radius:Float = 0F) {
+        val drawable = bitmap.toDrawable(context.resources)
+        val rect = RectF(drawable.bounds)
         val r  = radius.let {
             if (it != 0F) it
             else {
@@ -269,17 +278,72 @@ open class AlphabetBitmapGenerator (context: Context) {
                 }
             }
         }
-        val color = DesignColors.MaterialDesign.randomGreyColor()
+        borderConfig.apply {
+            val inset = ceil((borderThickness / 2).toDouble())
+            rect.inset(inset.toInt().toFloat(), inset.toInt().toFloat())
+            when (shape) {
+                BorderShape.CIRCLE -> canvas.drawCircle(r,r,r, borderPaint)
+                BorderShape.ROUNDRECT -> canvas.drawRoundRect(rect, radius, radius, borderPaint)
+                else -> canvas.drawRect(rect, borderPaint)
+            }
+        }
+    }
+
+    /**
+     * Internal method which reshapes the [bitmap] parameter into a circular shape.
+     * @param bitmap The [Bitmap] to be given a circular shape.
+     * @param radius The radius of the circle which would contain the Alphabet.
+     * @param backgroundColor The background color to be applied to the [Bitmap]. A random [Material][DesignColors.MaterialDesign] Blue color is chosen if none is specified.
+     * @return A circular [Bitmap].
+     */
+    private fun generateCircularBitmap(bitmap: Bitmap, radius: Float, @ColorInt backgroundColor: Int? = null): Bitmap {
+        val isDefaultBitmap = bitmap === mDefaultBitmap
+        val output: Bitmap = if(isDefaultBitmap) {
+            mDefaultBitmap.let {
+                if (mWidth > mHeight) {
+                    Bitmap.createBitmap(mHeight, mHeight, Bitmap.Config.ARGB_8888)
+                } else {
+                    Bitmap.createBitmap(mWidth, mWidth, Bitmap.Config.ARGB_8888)
+                }
+            }
+        } else {
+            if (bitmap.width > bitmap.height) {
+                Bitmap.createBitmap(bitmap.height, bitmap.height, Bitmap.Config.ARGB_8888)
+            } else {
+                Bitmap.createBitmap(bitmap.width, bitmap.width, Bitmap.Config.ARGB_8888)
+            }
+        }
+
+        val r  = radius.let {
+            if (it != 0F) it
+            else {
+                if (output.width > output.height) {
+                    (output.height/2).toFloat()
+                } else {
+                    (output.width/2).toFloat()
+                }
+            }
+        }
+        val color = backgroundColor?:DesignColors.MaterialDesign.randomBlueColor()
         val canvas = Canvas(output)
         val paint = Paint()
-        val rect = Rect(0, 0, bitmap.width, bitmap.height)
-
+        val rect = Rect(0, 0, output.width, output.height)
         paint.isAntiAlias = true
         canvas.drawARGB(0, 0, 0, 0)
         paint.color = color
         canvas.drawCircle(r, r, r, paint)
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-        canvas.drawBitmap(bitmap, rect, rect, paint)
+        if(isDefaultBitmap) {
+            canvas.drawBitmap(bitmap, (output.width/4).toFloat(), (output.height/4).toFloat(), null)
+        }
+        else
+            canvas.drawBitmap(bitmap, rect, rect, paint)
+        val bc = BorderConfig()
+        bc.apply {
+            borderColor = DesignColors.MaterialDesign.randomBrownColor()
+            borderThickness = 2F
+        }
+        drawBorder(output, canvas, bc, BorderShape.CIRCLE) //TODO: Affix the border setup properly
         return output
     }
 
