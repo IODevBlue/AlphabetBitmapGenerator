@@ -24,58 +24,57 @@ open class AlphabetBitmapGenerator (context: Context) {
 
    companion object {
 
-        /**
-         * Provides a [Bitmap] from the given [Drawable].
-         *
-         * If the [Drawable] object is a [BitmapDrawable], then its [Bitmap] is returned.
-         * @param drawable The [Drawable] to convert to [Bitmap].
-         * @return A [Bitmap] from the [drawable]
-         */
+       /**
+        * Provides a [Bitmap] from the given [Drawable].
+        * If the [Drawable] object is a [BitmapDrawable], then its [Bitmap] is returned.
+        * @param drawable The [Drawable] to convert to [Bitmap].
+        * @return A [Bitmap] from the [drawable]
+        */
         fun convertDrawableToBitmap(drawable: Drawable): Bitmap {
+           if (drawable is BitmapDrawable) {
+               drawable.bitmap?.let { return it }
+           }
 
-            if (drawable is BitmapDrawable) {
-                drawable.bitmap?.let { return it }
-            }
+           val bitmap = if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+               Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+           } else {
+               Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+           }
 
-            val bitmap = if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
-                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-            } else {
-                Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-            }
+           val canvas = Canvas(bitmap)
+           drawable.apply {
+               setBounds(0, 0, canvas.width, canvas.height)
+               draw(canvas)
+           }
 
-            val canvas = Canvas(bitmap)
-            drawable.apply {
-                setBounds(0, 0, canvas.width, canvas.height)
-                draw(canvas)
-            }
-
-            return bitmap
+           return bitmap
         }
 
-        /**
-         * Validates if the given [Char] object is an Alphabet or a Digit.
-         * @param character The [Char] object to be verified as an Alphabet or Digit.
-         * @return True if the [character] is an Alphabet or a Digit. False if otherwise.
-         */
-        fun verifyIfAlphabetOrDigit(character: Char) = Character.isLetterOrDigit(character)
+       /**
+        * Validates if the given [Char] object is an Alphabet or a Digit.
+        * @param character The [Char] object to be verified as an Alphabet or Digit.
+        * @return True if the [character] is an Alphabet or a Digit. False if otherwise.
+        */
+       fun verifyIfAlphabetOrDigit(character: Char) = Character.isLetterOrDigit(character)
 
-        /**
-         * Converts Density-Independent Pixels to Pixels
-         * @param dp Density-Independent Pixels in [Integer]
-         * @return Pixels in [Integer]
-         */
-        fun dpToPx(dp: Int) = (dp * Resources.getSystem().displayMetrics.density).toInt()
+       /**
+        * Converts Density-Independent Pixels to Pixels
+        * @param dp Density-Independent Pixels in [Integer]
+        * @return Pixels in [Integer]
+        */
+       fun dpToPx(dp: Int) = (dp * Resources.getSystem().displayMetrics.density).toInt()
 
+       /**
+        * Returns a darker shade of the provided [color].
+        * @param color The color to darken.
+        * @param factor The [Float] factor used to darken the color. Default = 0.9F
+        * @return A darkened version of the provided [color].
+        */
+       fun getDarkerShade(@ColorInt color: Int, factor: Float = 0.9F) = Color.rgb(
+           (factor * Color.red(color)).toInt(),
+           (factor * Color.green(color)).toInt(),
+           (factor * Color.blue(color)).toInt())
     }
-
-    /** The [TextPaint] object for drawing the Alphabet.*/
-    private val mPaint = TextPaint()
-
-    /** The rectangular boundary of the Alphabet. */
-    private val mBounds = Rect()
-
-    /** The [CharArray] object holding the first Alphabet of the provided [String]. */
-    private val mFirstCharacter = CharArray(1)
 
     /**
      * The Color [Int] for the Alphabet text.
@@ -106,6 +105,18 @@ open class AlphabetBitmapGenerator (context: Context) {
             field = value
         }
 
+    /**
+     * The font size (in [Float]) of the generated Alphabet Image.
+     *
+     * Default = 17F
+     */
+    var fontSize = 17F
+        set(value) {
+            if (value == 0f) return
+            else field = value * scale
+            mPaint.textSize = field
+        }
+
     /** The default image in [Bitmap] to be used if there is no character provided to generate an Alphabet. */
     private var mDefaultBitmap = convertDrawableToBitmap(defaultDrawable)
 
@@ -118,17 +129,14 @@ open class AlphabetBitmapGenerator (context: Context) {
     /** The density of the display used to set the [font size][fontSize] properly. */
     private val scale = context.resources.displayMetrics.density
 
-    /**
-     * The font size (in [Float]) of the generated Alphabet Image.
-     *
-     * Default = 17F
-     */
-    var fontSize = 17F
-        set(value) {
-            if (value == 0f) return
-            else field = value * scale
-            mPaint.textSize = field
-        }
+    /** The [TextPaint] object for drawing the Alphabet.*/
+    private val mPaint = TextPaint()
+
+    /** The rectangular boundary of the Alphabet. */
+    private val mBounds = Rect()
+
+    /** The [CharArray] object holding the first Alphabet of the provided [String]. */
+    private val mFirstCharacter = CharArray(1)
 
     init {
         mPaint.apply {
@@ -235,9 +243,7 @@ open class AlphabetBitmapGenerator (context: Context) {
                 drawBitmap(mDefaultBitmap, dpToPx(0).toFloat(), dpToPx(0).toFloat(), null)
                 generateCircularBitmap(mDefaultBitmap, radius)
             }
-
         }
-
     }
 
     /**
@@ -245,7 +251,6 @@ open class AlphabetBitmapGenerator (context: Context) {
      * @param bitmap The [Bitmap] to be given a circular shape.
      * @param radius The radius of the circle which would contain the Alphabet.
      * @return A circular [Bitmap].
-     *
      */
     private fun generateCircularBitmap(bitmap: Bitmap, radius: Float): Bitmap {
         val output: Bitmap = if (bitmap.width > bitmap.height) {
